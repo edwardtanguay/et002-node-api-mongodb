@@ -7,11 +7,18 @@ const app = express();
 app.use(cors());
 
 app.get('/', (req: express.Request, res: express.Response) => {
-	res.send(model.getApiInstructions());
+	req.
+		res.send(model.getApiInstructions());
 });
 
-app.get('/employees', (req: express.Request, res: express.Response) => {
-	res.json(model.getEmployees());
+app.get('/employees', async (req: express.Request, res: express.Response) => {
+	try {
+		const employees = await model.getEmployees();
+		res.json(employees);
+	}
+	catch (e) {
+		res.status(500).send(e)
+	}
 });
 
 app.listen(config.port, () => {

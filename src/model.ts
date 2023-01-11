@@ -1,4 +1,40 @@
+import { MongoClient } from 'mongodb';
 import { IEmployee } from "./interfaces.js";
+import * as config from './config.js';
+
+const client = new MongoClient(config.mongoDbConnection);
+
+const accessDatabase = async (done: (db: any) => void) => {
+	await client.connect();
+	const db = client.db('northwind');
+	done(db);
+};
+
+export const getEmployees = (): any => {
+	return new Promise((resolve, reject) => {
+		try {
+			accessDatabase(async (db) => {
+				const employees = await db
+					.collection('employees')
+					.find({})
+					.project({ firstName: 1, lastName: 1, _id: 0 })
+					.toArray();
+				if (employees.length > 0) {
+					resolve(employees);
+				} else {
+					reject({
+						status: "error",
+						message: "bad collection name"
+					})
+				}
+			});
+		}
+		catch (e) {
+			reject(e);
+		}
+	});
+}
+
 
 export const getApiInstructions = () => {
 	return `
@@ -21,10 +57,3 @@ export const getApiInstructions = () => {
 	`;
 }
 
-export const getEmployees = (): IEmployee[] => {
-	return [
-		{
-			firstName: "Hans"
-		}
-	];
-}

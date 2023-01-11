@@ -35,6 +35,10 @@ export const getEmployees = (): any => {
 	});
 }
 
+export const addEmployee = (employee: IEmployee) => {
+	console.log('adding', employee);
+	return 'ok';
+}
 
 export const getApiInstructions = () => {
 	return `

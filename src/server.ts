@@ -23,10 +23,15 @@ app.get('/employees', async (req: express.Request, res: express.Response) => {
 	}
 });
 
-app.post('/employee', (req: express.Request, res: express.Response) => {
-	const employee: IEmployee = req.body;
-	const result = model.addEmployee(employee);
-	res.send(result);
+app.post('/employee', async (req: express.Request, res: express.Response) => {
+	try {
+		const employee: IEmployee = req.body;
+		const result = await model.addEmployee(employee);
+		res.status(200).send(result);
+	}
+	catch (e) {
+		res.status(500).send(e.message);
+	}
 })
 
 app.listen(config.port, () => {

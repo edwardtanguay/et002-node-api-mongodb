@@ -35,9 +35,23 @@ export const getEmployees = (): any => {
 	});
 }
 
-export const addEmployee = (employee: IEmployee) => {
-	console.log('adding', employee);
-	return 'ok';
+export const addEmployee = async (employee: IEmployee) => {
+	return new Promise((resolve, reject) => {
+		try {
+			accessDatabase(async (db) => {
+				const employeesCollection = db.collection("employees");
+				const result = await employeesCollection.insertOne(employee);
+				console.log(result);
+				resolve({
+					status: "success",
+					newId: result.insertedId
+				})
+			});
+		}
+		catch (e) {
+			reject(e);
+		}
+	})
 }
 
 export const getApiInstructions = () => {
